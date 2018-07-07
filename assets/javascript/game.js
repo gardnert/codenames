@@ -8,6 +8,7 @@ window.Game = React.createClass({
             game: null,
             mounted: true,
             codemaster: false,
+	    hardmode: true,
         };
     },
 
@@ -36,6 +37,10 @@ window.Game = React.createClass({
     toggleRole: function(e, role) {
         e.preventDefault();
         this.setState({codemaster: role=='codemaster'});
+    },
+    toggleMode: function(e, mode) {
+        e.preventDefault();
+        this.setState({hardmode: mode=='hardmode'});
     },
 
     guess: function(e, idx, word) {
@@ -132,7 +137,7 @@ window.Game = React.createClass({
                   {this.state.game.words.map((w, idx) =>
                     (
                         <div for={idx}
-                             className={"cell " + this.state.game.layout[idx] + " " + (this.state.game.revealed[idx] ? "revealed" : "hidden-word")}
+                             className={"cell " + this.state.game.layout[idx] + " " + (this.state.game.revealed[idx] ? "revealed" : "hidden-word") + " " + (this.state.hardmode ? "hardmode" : "normal")}
                              onClick={(e) => this.guess(e, idx, w)}
                         >
                             <span className="word">{w}</span>
@@ -140,7 +145,9 @@ window.Game = React.createClass({
                     )
                   )}
                 </div>
-                <form id="mode-toggle" className={this.state.codemaster ? "codemaster-selected" : "player-selected"}>
+                <form id="mode-toggle" className={(this.state.codemaster ? "codemaster-selected" : "player-selected")+" "+(this.state.hardmode ? "hard-selected" : "normal-selected")}>
+                    <button onClick={(e) => this.toggleMode(e, 'normal')} className="normal">Normal</button>
+                    <button onClick={(e) => this.toggleMode(e, 'hardmode')} className="hardmode">Hard</button>
                     <button onClick={(e) => this.toggleRole(e, 'player')} className="player">Player</button>
                     <button onClick={(e) => this.toggleRole(e, 'codemaster')} className="codemaster">Spymaster</button>
                     <button onClick={(e) => this.nextGame(e)} id="next-game-btn">Next game</button>

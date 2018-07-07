@@ -75,12 +75,29 @@ body {
 
 #mode-toggle button.player {
     border-radius: 5px 0 0 5px;
+     margin-left: 10px;
     -moz-border-radius: 5px 0 0 5px;
     -webkit-border-radius: 5px 0 0 5px;
 }
 
+#mode-toggle button.hardmode {
+    border-left: none;
+    border-radius: 0 5px 5px 0;
+    -moz-border-radius:  0 5px 5px 0;
+    -webkit-border-radius: 0 5px 5px 0;
+}
+
+#mode-toggle button.normal {
+    border-radius: 5px 0 0 5px;
+    -moz-border-radius: 5px 0 0 5px;
+    -webkit-border-radius: 5px 0 0 5px;
+}
+
+
 #mode-toggle.player-selected button.player,
-#mode-toggle.codemaster-selected button.codemaster {
+#mode-toggle.codemaster-selected button.codemaster,
+#mode-toggle.hard-selected button.hardmode,
+#mode-toggle.normal-selected button.normal{
     cursor: auto;
     color: #999;
 }
@@ -113,7 +130,8 @@ body {
 
 .codemaster .red.hidden-word { color: #8c0f0f; text-shadow: 1px 1px 0px #7d7d7d;}
 .codemaster .blue.hidden-word { color: #0d407b; text-shadow: 1px 1px 0px #7d7d7d;}
-.codemaster .black.hidden-word { background: #383737; color: #c5c5c5; text-shadow: 1px 1px 0px #181818; }
+.codemaster .black.hidden-word.normal { background: #383737; color: #c5c5c5; text-shadow: 1px 1px 0px #181818; }
+.codemaster .black.hidden-word.hardmode { background: #757575; color: #000; }
 .codemaster .cell { font-weight: 900; }
 
 #board .red.revealed { background: #8c0f0f; color: #FFF; }
