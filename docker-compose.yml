@@ -6,4 +6,4 @@ services:
                 ports:
                         - "9091:9091"
                 volumes:
-                        - assets:/assets
+                        - ./assets:/assets
