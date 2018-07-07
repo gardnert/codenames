@@ -1,19 +1,19 @@
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-    color:    #999;
+    color:    #616161;
     font-style: italic;
 }
 :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-   color:    #999;
+   color:    #616161;
    opacity:  1;
    font-style: italic;
 }
 ::-moz-placeholder { /* Mozilla Firefox 19+ */
-   color:    #999;
+   color:    #616161;
    opacity:  1;
    font-style: italic;
 }
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
-   color:    #999;
+   color:    #616161;
    font-style: italic;
 }
 

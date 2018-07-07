@@ -1,5 +1,6 @@
 h2 {
     font-size: 1.1em;
+    color: #616161;
 }
 
 p.intro {
@@ -8,6 +9,7 @@ p.intro {
   text-align: justify;
   font-family: verdana;
   font-size: 0.9em;
+  color: #616161;
 }
 
 #available-games {
@@ -43,18 +45,20 @@ p.intro {
     width: 350px;
     padding: 5px 10px;
     font-size: 1.3em;
-    border: 1px #DDD solid;
+    border: 1px #616161 solid;
     letter-spacing: 0.1em;
+    background: #9E9E9E;
 }
 
 #new-game button {
     height: 62px;
     width: 120px;
     padding: 5px 10px;
-    background: #85DE6F;
-    border: 1px #DDD solid;
+    background: #5C6BC0;
+    border: 1px #616161 solid;
     font-size: 1em;
     vertical-align: top;
     text-transform: uppercase;
     cursor: pointer;
+    color: #9E9E9E;
 }

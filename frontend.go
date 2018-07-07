@@ -44,12 +44,12 @@ const tpl = `
 			}
 
 			#topbar a {
-			  color: black;
+			  color: #bdbdbd;
 			  text-decoration: none;
 			}
 
 			h1 {
-			  text-transform: uppercase;
+			  text-transform: uppercase;			  
 			  letter-spacing: 0.2em;
 			  text-align: center;
 			  font-family: "Courier New", monospace;
@@ -68,16 +68,6 @@ const tpl = `
         <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     </head>
     <body>
-		<script>
-		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-		  ga('create', 'UA-88084599-2', 'auto');
-		  ga('send', 'pageview');
-
-		</script>
 		<div id="app">
 		</div>
         <script type="text/babel">

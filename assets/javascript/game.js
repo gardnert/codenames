@@ -82,8 +82,11 @@ window.Game = React.createClass({
 
     nextGame: function(e) {
         e.preventDefault();
-        $.post('/next-game', JSON.stringify({game_id: this.state.game.id}),
-              (g) => { this.setState({game: g, codemaster: false}) });
+	if (confirm("Are you sure you want to go to the next game?")){
+
+        	$.post('/next-game', JSON.stringify({game_id: this.state.game.id}),
+              		(g) => { this.setState({game: g, codemaster: false}) });
+	}
     },
 
     render: function() {
@@ -101,7 +104,8 @@ window.Game = React.createClass({
         }
 
         let endTurnButton;
-        if (!this.state.game.winning_team && !this.state.codemaster) {
+        //if (!this.state.game.winning_team && !this.state.codemaster) {
+        if (!this.state.game.winning_team) {
             endTurnButton = (<button onClick={(e) => this.endTurn(e)} id="end-turn-btn">End {this.currentTeam()}&#39;s turn</button>)
         }
 
@@ -112,9 +116,6 @@ window.Game = React.createClass({
 
         return (
             <div id="game-view" className={this.state.codemaster ? "codemaster" : "player"}>
-                <div id="share">
-                  Send this link to friends: <a className="url" href={window.location.href}>{window.location.href}</a>
-                </div>
                 <div id="status-line" className={statusClass}>
                     <div id="status" className="status-text">{status}</div>
                 </div>

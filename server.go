@@ -30,6 +30,9 @@ type Server struct {
 	words []string
 	mux   *http.ServeMux
 }
+func (s *Server) faviconHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "assets/favicon.ico")
+}
 
 // GET /game/<id>
 func (s *Server) handleRetrieveGame(rw http.ResponseWriter, req *http.Request) {
@@ -178,7 +181,7 @@ func (s *Server) Start() error {
 	if err != nil {
 		return err
 	}
-	d, err := dictionary.Load("assets/original.txt")
+	d, err := dictionary.Load("assets/words.txt")
 	if err != nil {
 		return err
 	}
@@ -210,6 +213,7 @@ func (s *Server) Start() error {
 	s.mux.Handle("/js/lib/", http.StripPrefix("/js/lib/", s.jslib))
 	s.mux.Handle("/js/", http.StripPrefix("/js/", s.js))
 	s.mux.Handle("/css/", http.StripPrefix("/css/", s.css))
+	s.mux.HandleFunc("/favicon.ico",s.faviconHandler)
 	s.mux.HandleFunc("/", s.handleIndex)
 
 	gameIDs = dictionary.Filter(gameIDs, func(s string) bool { return len(s) > 3 })
