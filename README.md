@@ -6,4 +6,4 @@ Codenames implements a web app for generating and displaying boards for the <a h
 
 A hosted version of the app is available at [www.hackervoiceim.in](https://www.hackervoiceim.in).
 
-![Spymaster view of board](https://raw.githubusercontent.com/gardnert/codenames/master/screenshot.png)
+![Spymaster view of board](https://raw.githubusercontent.com/gardnert/codenames/master/screenshot1.png)
