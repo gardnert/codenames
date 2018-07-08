@@ -80,19 +80,33 @@ body {
     -webkit-border-radius: 5px 0 0 5px;
 }
 
-#mode-toggle button.hardmode {
+
+#mode-toggle.player-selected button.hardmode  {
+  visibility: hidden;
     border-left: none;
     border-radius: 0 5px 5px 0;
     -moz-border-radius:  0 5px 5px 0;
     -webkit-border-radius: 0 5px 5px 0;
 }
 
-#mode-toggle button.normal {
+#mode-toggle.player-selected button.normal {
+    visibility: hidden;
     border-radius: 5px 0 0 5px;
     -moz-border-radius: 5px 0 0 5px;
     -webkit-border-radius: 5px 0 0 5px;
 }
+#mode-toggle.codemaster-selected button.hardmode  {
+    border-left: none;
+    border-radius: 0 5px 5px 0;
+    -moz-border-radius:  0 5px 5px 0;
+    -webkit-border-radius: 0 5px 5px 0;
+}
 
+#mode-toggle.codemaster-selected button.normal {
+    border-radius: 5px 0 0 5px;
+    -moz-border-radius: 5px 0 0 5px;
+    -webkit-border-radius: 5px 0 0 5px;
+}
 
 #mode-toggle.player-selected button.player,
 #mode-toggle.codemaster-selected button.codemaster,
