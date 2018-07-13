@@ -59,6 +59,9 @@ func (t Team) Repeat(n int) []Team {
 type Game struct {
 	ID           string    `json:"id"`
 	CreatedAt    time.Time `json:"created_at"`
+	TurnEndingAt  time.Time  `json:"turn_ending_at"`
+	TimeRemaining int `json:"time_remaining"`
+	TimerEnabled bool      `json:"timer_enabled"`
 	StartingTeam Team      `json:"starting_team"`
 	WinningTeam  *Team     `json:"winning_team,omitempty"`
 	Round        int       `json:"round"`
@@ -95,6 +98,7 @@ func (g *Game) checkWinningCondition() {
 		g.WinningTeam = &winners
 	}
 	if g.WinningTeam != nil && g.overFunc != nil {
+		g.TimerEnabled = false
 		g.overFunc(g)
 	}
 }
@@ -104,9 +108,13 @@ func (g *Game) NextTurn() error {
 		return errors.New("game is already over")
 	}
 	g.Round++
+	g.TurnEndingAt = time.Now().Add(time.Second *60)
 	return nil
 }
-
+func (g *Game) ManageTimer(enabled bool){
+	g.TimerEnabled = enabled
+	g.TurnEndingAt = time.Now().Add(time.Second *60)
+}
 func (g *Game) Guess(idx int) error {
 	if idx > len(g.Layout) || idx < 0 {
 		return fmt.Errorf("index %d is invalid", idx)
@@ -125,6 +133,7 @@ func (g *Game) Guess(idx int) error {
 	g.checkWinningCondition()
 	if g.Layout[idx] != g.CurrentTeam() {
 		g.Round = g.Round + 1
+		g.TurnEndingAt = time.Now().Add(time.Second *60)
 	}
 	return nil
 }
@@ -140,6 +149,9 @@ func newGame(id string, words []string) *Game {
 	game := &Game{
 		ID:           id,
 		CreatedAt:    time.Now(),
+		TurnEndingAt:    time.Now().Add(time.Second *60),
+		TimeRemaining: 60,
+		TimerEnabled: false,
 		StartingTeam: Team(rand.Intn(2)) + Red,
 		Words:        make([]string, 0, wordsPerGame),
 		Layout:       make([]Team, 0, wordsPerGame),

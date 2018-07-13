@@ -28,12 +28,33 @@ window.Game = React.createClass({
       $.get('/game/' + this.props.gameID, (data) => {
           if (this.state.game && data.created_at != this.state.game.created_at) {
             this.setState({codemaster: false});
+            this.setState({timer_enabled: false});
           }
           this.setState({game: data});
-          setTimeout(this.refresh, 3000);
+          setTimeout(this.refresh, 1000);
       });
     },
 
+    calculateRemainingTime: function(){
+	    let timeRemaining = this.state.game.time_remaining;
+	    if (timeRemaining >= 0){
+	    	return(("0"+timeRemaining).slice(-2));
+	    } else {
+		//this.endTurn("timer_ended");
+		return 0;
+	    }
+	    return timeRemaining;
+    },
+    toggleTimer: function(e, timer_enabled) {
+        e.preventDefault();
+	if (this.state.game.timer_enabled && timer_enabled=='enabled') {
+		return;
+	}
+	$.post('/timer', JSON.stringify({
+	    game_id: this.state.game.id,
+	    timer_enabled: timer_enabled =='enabled',
+	}), (g) => { this.setState({game: g}); });
+    },
     toggleRole: function(e, role) {
         e.preventDefault();
         this.setState({codemaster: role=='codemaster'});
@@ -80,8 +101,11 @@ window.Game = React.createClass({
         return count;
     },
 
-    endTurn: function() {
-        $.post('/end-turn', JSON.stringify({game_id: this.state.game.id}),
+    endTurn: function(reason) {
+        $.post('/end-turn', JSON.stringify({
+		game_id: this.state.game.id,
+		reason: reason,
+	    }),
               (g) => { this.setState({game: g}); });
     },
 
@@ -107,11 +131,14 @@ window.Game = React.createClass({
             statusClass = this.currentTeam();
             status = this.currentTeam() + "'s turn";
         }
+	let timerDisplay;
+	if (this.state.game.timer_enabled && !this.state.game.winning_team){
+	    timerDisplay = (<span id="timerDisplay">{this.calculateRemainingTime() }</span>)
+	}
 
         let endTurnButton;
-        //if (!this.state.game.winning_team && !this.state.codemaster) {
         if (!this.state.game.winning_team) {
-            endTurnButton = (<button onClick={(e) => this.endTurn(e)} id="end-turn-btn">End {this.currentTeam()}&#39;s turn</button>)
+            endTurnButton = (<button onClick={(e) => this.endTurn("button")} id="end-turn-btn">End {this.currentTeam()}&#39;s turn</button>)
         }
 
         let otherTeam = 'blue';
@@ -129,8 +156,9 @@ window.Game = React.createClass({
                         <span className={this.state.game.starting_team+"-remaining"}>{this.remaining(this.state.game.starting_team)}</span>
                         &nbsp;&ndash;&nbsp;
                         <span className={otherTeam + "-remaining"}>{this.remaining(otherTeam)}</span>
+		    	{timerDisplay}
+                        {endTurnButton}
                     </div>
-                    {endTurnButton}
                     <div className="clear"></div>
                 </div>
                 <div id="board">
@@ -145,9 +173,11 @@ window.Game = React.createClass({
                     )
                   )}
                 </div>
-                <form id="mode-toggle" className={(this.state.codemaster ? "codemaster-selected" : "player-selected")+" "+(this.state.hardmode ? "hard-selected" : "normal-selected")}>
+                <form id="mode-toggle" className={(this.state.codemaster ? "codemaster-selected" : "player-selected")+" "+(this.state.hardmode ? "hard-selected" : "normal-selected")+" "+(this.state.game.timer_enabled ? "speedrun-selected" : "non_speedrun-selected")}>
                     <button onClick={(e) => this.toggleMode(e, 'normal')} className="normal">Normal</button>
                     <button onClick={(e) => this.toggleMode(e, 'hardmode')} className="hardmode">Hard</button>
+                    <button onClick={(e) => this.toggleTimer(e, 'regular')} className="non_speedrun">Normal</button>
+                    <button onClick={(e) => this.toggleTimer(e, 'enabled')} className="speedrun">Speedrun</button>
                     <button onClick={(e) => this.toggleRole(e, 'player')} className="player">Player</button>
                     <button onClick={(e) => this.toggleRole(e, 'codemaster')} className="codemaster">Spymaster</button>
                     <button onClick={(e) => this.nextGame(e)} id="next-game-btn">Next game</button>

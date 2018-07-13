@@ -30,6 +30,7 @@ type Server struct {
 	words []string
 	mux   *http.ServeMux
 }
+
 func (s *Server) faviconHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "assets/favicon.ico")
 }
@@ -42,6 +43,17 @@ func (s *Server) handleRetrieveGame(rw http.ResponseWriter, req *http.Request) {
 	gameID := path.Base(req.URL.Path)
 	g, ok := s.games[gameID]
 	if ok {
+		if g.TimerEnabled {
+			g.TimeRemaining = int(time.Until(g.TurnEndingAt)/time.Second)
+			if g.TimeRemaining <= 0 {
+				if err := g.NextTurn(); err != nil {
+					http.Error(rw, err.Error(), 400)
+					return
+				}
+			}
+			writeJSON(rw, g)
+			return
+		}
 		writeJSON(rw, g)
 		return
 	}
@@ -85,6 +97,7 @@ func (s *Server) handleGuess(rw http.ResponseWriter, req *http.Request) {
 func (s *Server) handleEndTurn(rw http.ResponseWriter, req *http.Request) {
 	var request struct {
 		GameID string `json:"game_id"`
+		Reason string `json:"reason"`
 	}
 
 	decoder := json.NewDecoder(req.Body)
@@ -95,10 +108,12 @@ func (s *Server) handleEndTurn(rw http.ResponseWriter, req *http.Request) {
 
 	s.mu.Lock()
 	defer s.mu.Unlock()
-
 	g, ok := s.games[request.GameID]
 	if !ok {
 		http.Error(rw, "No such game", 404)
+		return
+	}
+	if request.Reason == "timer_ended" && int(time.Until(g.TurnEndingAt)/time.Second)>=0{
 		return
 	}
 
@@ -106,6 +121,26 @@ func (s *Server) handleEndTurn(rw http.ResponseWriter, req *http.Request) {
 		http.Error(rw, err.Error(), 400)
 		return
 	}
+	writeJSON(rw, g)
+}
+
+func (s *Server) handleTimer(rw http.ResponseWriter, req *http.Request) {
+	var request struct {
+		TimerEnabled bool   `json:"timer_enabled"`
+		GameID       string `json:"game_id"`
+	}
+	decoder := json.NewDecoder(req.Body)
+	if err := decoder.Decode(&request); err != nil {
+		http.Error(rw, "Error decoding", 400)
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	g, ok := s.games[request.GameID]
+	if !ok {
+		http.Error(rw, "No such Game", 404)
+		return
+	}
+	g.ManageTimer(request.TimerEnabled)
 	writeJSON(rw, g)
 }
 
@@ -206,6 +241,7 @@ func (s *Server) Start() error {
 
 	s.mux.HandleFunc("/stats", s.handleStats)
 	s.mux.HandleFunc("/next-game", s.handleNextGame)
+	s.mux.HandleFunc("/timer", s.handleTimer)
 	s.mux.HandleFunc("/end-turn", s.handleEndTurn)
 	s.mux.HandleFunc("/guess", s.handleGuess)
 	s.mux.HandleFunc("/game/", s.handleRetrieveGame)
@@ -213,7 +249,7 @@ func (s *Server) Start() error {
 	s.mux.Handle("/js/lib/", http.StripPrefix("/js/lib/", s.jslib))
 	s.mux.Handle("/js/", http.StripPrefix("/js/", s.js))
 	s.mux.Handle("/css/", http.StripPrefix("/css/", s.css))
-	s.mux.HandleFunc("/favicon.ico",s.faviconHandler)
+	s.mux.HandleFunc("/favicon.ico", s.faviconHandler)
 	s.mux.HandleFunc("/", s.handleIndex)
 
 	gameIDs = dictionary.Filter(gameIDs, func(s string) bool { return len(s) > 3 })

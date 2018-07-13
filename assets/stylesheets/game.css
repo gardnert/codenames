@@ -29,10 +29,10 @@ body {
     font-weight: bold;
 }
 
-#remaining {font-size: 2em; margin-left: 5px;  text-shadow: 1px 1px 0px #4b4b4b;color: #bdbdbd;}
-/*#remaining { float: left; color: #bdbdbd; font-size: 1.1em;}*/
+#remaining {font-size: 2em; margin-left: 5px;  text-shadow: 1px 1px 0px #4b4b4b;color: #bdbdbd;margin-bottom: -.5em;}
 #remaining .red-remaining { color: #bc1616; }
 #remaining .blue-remaining { color: #135cb0; }
+#timerDisplay {width: 42%; text-align: right; display: inline-block; }
 
 #button-line {
     margin-bottom: 1em;
@@ -48,14 +48,14 @@ body {
     padding: 5px;
     float: right;
     background: #424242;
-    margin: 0 1em 0 0;
+    margin: 0 .3em 0 0;
     cursor: pointer;
     color: #bdbdbd;
 }
 
 #mode-toggle {
     text-align: right;
-    margin: 2em 5px 2em 0;
+    margin: .5em 5px 2em 0;
 }
 
 #mode-toggle button {
@@ -107,10 +107,25 @@ body {
     -moz-border-radius: 5px 0 0 5px;
     -webkit-border-radius: 5px 0 0 5px;
 }
+#mode-toggle button.speedrun  {
+    border-left: none;
+    border-radius: 0 5px 5px 0;
+    -moz-border-radius:  0 5px 5px 0;
+    -webkit-border-radius: 0 5px 5px 0;
+}
+
+#mode-toggle button.non_speedrun {
+    border-radius: 5px 0 0 5px;
+    margin-left: 10px;
+    -moz-border-radius: 5px 0 0 5px;
+    -webkit-border-radius: 5px 0 0 5px;
+}
 
 #mode-toggle.player-selected button.player,
 #mode-toggle.codemaster-selected button.codemaster,
 #mode-toggle.hard-selected button.hardmode,
+#mode-toggle.speedrun-selected button.speedrun,
+#mode-toggle.non_speedrun-selected button.non_speedrun,
 #mode-toggle.normal-selected button.normal{
     cursor: auto;
     color: #999;
